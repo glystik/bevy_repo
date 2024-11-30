@@ -3,6 +3,7 @@
 //! Demonstrates Bevy's stepping capabilities if compiled with the `bevy_debug_stepping` feature.
 
 use bevy::{
+    audio::{AudioPlayer, PlaybackSettings, Volume},
     math::bounding::{Aabb2d, BoundingCircle, BoundingVolume, IntersectsVolume},
     prelude::*,
 };
@@ -395,6 +396,8 @@ fn check_for_collisions(
     }
 }
 
+
+
 fn play_collision_sound(
     mut commands: Commands,
     mut collision_events: EventReader<CollisionEvent>,
@@ -404,9 +407,13 @@ fn play_collision_sound(
     if !collision_events.is_empty() {
         // This prevents events staying active on the next frame.
         collision_events.clear();
-        commands.spawn((AudioPlayer(sound.clone()), PlaybackSettings::DESPAWN));
+        commands.spawn((
+            AudioPlayer(sound.clone()), 
+            PlaybackSettings::default().with_volume(Volume::new(0.02)),
+        ));
     }
 }
+
 
 #[derive(Debug, PartialEq, Eq, Copy, Clone)]
 enum Collision {
